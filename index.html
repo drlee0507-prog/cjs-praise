@@ -154,7 +154,8 @@ Promise.resolve().then(()=>{
   s.dates.push(r.date); if(r.verse)s.verses.push(r.verse); if(r.note)s.notes.push(r.note);
   if(r.title&&!s.title){s.title=r.title;s.channel=r.channel}
  }
- songs=Object.values(by).map(s=>({...s,last:s.dates[s.dates.length-1],first:s.dates[0]})).sort((a,b)=>b.last.localeCompare(a.last));
+ const DEAD='(재생할 수 없는 영상)';
+ songs=Object.values(by).filter(s=>s.title!==DEAD).map(s=>({...s,last:s.dates[s.dates.length-1],first:s.dates[0]})).sort((a,b)=>b.last.localeCompare(a.last));
  const days=raw.map(r=>r.date).sort();
  $('stats').innerHTML=[[songs.length+'곡','모은 찬양'],[raw.length+'번','나눠주신 횟수'],[days[0].slice(0,4)+'년 '+(+days[0].slice(5,7))+'월','부터']]
   .map(([b,s])=>`<li><b>${esc(b)}</b><span>${esc(s)}</span></li>`).join('');

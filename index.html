@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>매일 아침 한 곡 - 최종순 집사님 찬양 모음</title>
+<meta name="description" content="일본선교회 최종순 집사님이 매일 아침 나눠주신 찬양 모음">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* VOICE: 조용한 새벽 묵상, 따뜻하고 단정하게
+   IDEA: 매일 한 장씩 넘기는 아침 묵상 달력
+   PICTURE: 맨 위 "오늘의 찬양" 큰 카드 (영상 썸네일 + 읽을 말씀)
+   COLOUR and TYPE: 새벽 자두빛 #3d2347 + 아침 햇살 코랄 #f0704f, 흰 바탕 / Pretendard (제목 800, 본문 400)
+   LAYOUT: 상단 새벽 띠 안에 제목·오늘의 찬양, 아래 필터 줄과 카드 격자 */
+:root{color-scheme:light dark;
+ --bg:light-dark(#ffffff,#16101a);--ink:light-dark(#241a28,#f1e9f3);--mute:light-dark(#6d6072,#b6a8bb);
+ --dawn:#3d2347;--dawn2:light-dark(#f4eef6,#241a2a);--sun:#f0704f;--line:light-dark(#e7dfe9,#352a3a);--card:light-dark(#fff,#1e1622)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;letter-spacing:-.01em;overflow-x:clip}
+h1,h2{font-weight:800;letter-spacing:-.03em}.ttl{font-weight:600;letter-spacing:-.02em}
+.band{padding:clamp(24px,4vw,56px) max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+header{background:var(--dawn);color:#f7eef8;position:relative;overflow:hidden}
+header::before{content:"";position:absolute;right:-12vw;bottom:-38vw;width:70vw;height:70vw;border-radius:50%;
+ background:radial-gradient(circle,#f0704f55 0,#f0704f22 35%,transparent 65%);pointer-events:none}
+.top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:clamp(20px,4vw,56px);align-items:center;position:relative}
+h1{font-size:clamp(34px,5vw,50px);line-height:1.08;margin:0 0 12px;text-wrap:balance}
+.lead{color:#e6d6ea;max-width:34em;margin:0 0 20px}
+.stats{display:flex;flex-wrap:wrap;gap:10px 28px;margin:0;padding:0;list-style:none}
+.stats b{display:block;font-size:26px;font-weight:800;letter-spacing:-.02em;color:#fff}
+.stats span{font-size:14px;color:#cdb8d2}
+.today{background:#ffffff10;border:1px solid #ffffff22;border-radius:18px;padding:14px;display:grid;gap:12px}
+.today .lbl{font-size:14px;color:#ffc2b1}
+.thumb{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#2a1830;cursor:pointer;border:0;padding:0;width:100%;display:block}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+.thumb:hover img{transform:scale(1.03)}
+.play{position:absolute;inset:auto auto 12px 12px;width:48px;height:48px;border-radius:50%;background:var(--sun);display:grid;place-items:center;box-shadow:0 4px 14px #0005}
+.play::after{content:"";border-left:15px solid #fff;border-top:9px solid transparent;border-bottom:9px solid transparent;margin-left:4px}
+.today .ttl{font-size:21px;line-height:1.35;color:#fff}
+.meta{font-size:14px;color:var(--mute)}
+.today .meta{color:#d9c6dd}
+.verse{display:inline-block;font-size:14px;padding:2px 10px;border-radius:99px;background:var(--dawn2);color:var(--ink)}
+.today .verse{background:#ffffff1c;color:#fff}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px max(5vw,16px)}
+.tabs,.years{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+button,select,input{font:inherit;color:inherit}
+.chip{flex:none;min-height:40px;padding:0 14px;border-radius:99px;border:1px solid var(--line);background:var(--card);cursor:pointer;white-space:nowrap}
+.chip[aria-pressed=true]{background:var(--dawn);border-color:var(--dawn);color:#fff}
+.chip small{opacity:.7;margin-left:4px}
+input[type=search]{flex:1 1 220px;min-height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:16px}
+.act{min-height:44px;padding:0 16px;border-radius:12px;border:0;background:var(--sun);color:#fff;cursor:pointer}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:22px 18px}
+.card{display:grid;gap:8px;align-content:start}
+.card .ttl{font-size:17px;line-height:1.4;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card .play{width:38px;height:38px;inset:auto auto 8px 8px}
+.card .play::after{border-left-width:12px;border-top-width:7px;border-bottom-width:7px}
+.tag{font-size:12px;padding:1px 8px;border-radius:99px;background:var(--sun);color:#fff;margin-right:6px}
+.cnt{color:var(--sun)}
+.empty{grid-column:1/-1;padding:48px 0;text-align:center;color:var(--mute)}
+.more{display:block;margin:28px auto 0}.more[hidden]{display:none}
+footer{color:var(--mute);font-size:14px;border-top:1px solid var(--line)}
+dialog{border:0;padding:0;width:min(960px,94vw);border-radius:16px;background:var(--card);color:var(--ink)}
+dialog::backdrop{background:#0d0810cc}
+.player{aspect-ratio:16/9;background:#000}
+.player>*{width:100%;height:100%;display:block;border:0}
+.local{position:relative;display:grid;place-items:center;text-decoration:none;color:#fff}
+.local img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.45}
+.local div{position:relative;text-align:center;padding:20px;display:grid;gap:12px;justify-items:center}
+.local b{background:var(--sun);padding:12px 22px;border-radius:99px;font-size:17px}
+.local span{font-size:14px;color:#eee;max-width:30em}
+.dlg{padding:14px 18px 18px;display:grid;gap:8px}
+.dlg .ttl{font-size:20px;line-height:1.35;margin:0}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ctl .chip{min-height:44px}
+label.auto{display:flex;align-items:center;gap:6px;margin-left:auto;font-size:15px}
+label.auto input{width:20px;height:20px}
+@media(max-width:760px){.top{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.thumb img{transition:none}}
+</style>
+</head>
+<body>
+<header class="band">
+ <div class="wrap top">
+  <div>
+   <h1>매일 아침 한 곡</h1>
+   <p class="lead">일본선교회 최종순 집사님이 매일 아침 단톡방에 나눠주신 찬양을 한곳에 모았습니다. 그날 함께 올려주신 읽을 말씀도 곁에 적어 두었습니다.</p>
+   <ul class="stats" id="stats"></ul>
+  </div>
+  <div class="today" id="today"></div>
+ </div>
+</header>
+
+<nav class="bar" aria-label="찬양 찾기">
+ <div class="wrap">
+  <div class="tabs" id="tabs" role="group" aria-label="분류"></div>
+  <input type="search" id="q" placeholder="곡 제목, 채널, 말씀 검색" aria-label="검색">
+  <button class="act" id="rand" type="button">아무 곡이나 듣기</button>
+  <div class="years" id="years" role="group" aria-label="연도" style="flex-basis:100%"></div>
+ </div>
+</nav>
+
+<main class="band"><div class="wrap">
+ <p class="meta" id="count"></p>
+ <div class="grid" id="grid"></div>
+ <button class="chip more" id="more" type="button" hidden>더 보기</button>
+</div></main>
+
+<footer class="band"><div class="wrap">
+ 찬양 영상의 저작권은 각 영상 제작자에게 있으며, 이 페이지는 유튜브 링크를 모아 소개합니다. 정리: 지구촌교회(서울 목동) 일본선교회
+</div></footer>
+
+<dialog id="dlg" aria-label="찬양 재생">
+ <div class="player" id="pbox"><div id="yt"></div></div>
+ <div class="dlg">
+  <p class="ttl" id="dTitle"></p>
+  <p class="meta" id="dMeta" style="margin:0"></p>
+  <div class="ctl">
+   <button class="chip" id="prev" type="button">이전 곡</button>
+   <button class="chip" id="next" type="button">다음 곡</button>
+   <a class="chip" id="open" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none">유튜브에서 보기</a>
+   <button class="chip" id="close" type="button">닫기</button>
+   <label class="auto"><input type="checkbox" id="auto" checked> 끝나면 다음 곡</label>
+  </div>
+ </div>
+</dialog>
+
+<script src="songs.js"></script>
+<script src="types.js"></script>
+<script>
+{
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const TYPES={all:'전체',share:'나눠주신 찬양',creation:'집사님 창작 찬양',video:'함께 만든 영상'};
+const PAGE=48;
+const LOCAL=location.protocol==='file:';
+let songs=[],list=[],shown=PAGE,cur=-1,player=null,tab='all',year='all';
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const tcache=store.get('cjs-titles')||{};
+const fmt=d=>d.replace(/^(\d{4})-(\d\d)-(\d\d)$/,(m,y,mo,da)=>`${y}.${+mo}.${+da}`);
+const thumb=id=>`https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+const title=s=>s.title||tcache[s.id]?.[0]||'';
+const chan=s=>s.channel||tcache[s.id]?.[1]||'';
+
+Promise.resolve().then(()=>{
+ if(!Array.isArray(window.SONGS)||!window.SONGS.length)throw new Error('no data');
+ const raw=window.SONGS,types=window.TYPES||{};
+ const by={};
+ for(const r of raw){
+  const s=by[r.id]||(by[r.id]={id:r.id,title:r.title,channel:r.channel,dates:[],verses:[],notes:[],type:types[r.id]||'share'});
+  s.dates.push(r.date); if(r.verse)s.verses.push(r.verse); if(r.note)s.notes.push(r.note);
+  if(r.title&&!s.title){s.title=r.title;s.channel=r.channel}
+ }
+ songs=Object.values(by).map(s=>({...s,last:s.dates[s.dates.length-1],first:s.dates[0]})).sort((a,b)=>b.last.localeCompare(a.last));
+ const days=raw.map(r=>r.date).sort();
+ $('stats').innerHTML=[[songs.length+'곡','모은 찬양'],[raw.length+'번','나눠주신 횟수'],[days[0].slice(0,4)+'년 '+(+days[0].slice(5,7))+'월','부터']]
+  .map(([b,s])=>`<li><b>${esc(b)}</b><span>${esc(s)}</span></li>`).join('');
+ const t=songs[0];
+ $('today').innerHTML=`<div class="lbl">가장 최근에 나눠주신 찬양 · ${esc(fmt(t.last))}</div>
+  <button class="thumb" type="button" data-id="${esc(t.id)}" aria-label="재생"><img src="${thumb(t.id)}" alt=""><span class="play"></span></button>
+  <div class="ttl" data-title="${esc(t.id)}">${esc(title(t)||'오늘의 찬양')}</div>
+  ${t.verses.length?`<div><span class="verse">읽을 말씀 · ${esc(t.verses.at(-1))}</span></div>`:''}`;
+ const yrs=[...new Set(songs.map(s=>s.last.slice(0,4)))].sort().reverse();
+ $('years').innerHTML=['all',...yrs].map(y=>`<button class="chip" type="button" data-y="${y}" aria-pressed="${y==year}">${y=='all'?'모든 해':y+'년'}</button>`).join('');
+ render();
+}).catch(()=>{$('grid').innerHTML='<p class="empty">찬양 목록(songs.js)을 불러오지 못했습니다. index.html 과 같은 폴더에 songs.js 가 있는지 확인해 주세요.</p>'});
+
+function filtered(){
+ const q=$('q').value.trim().toLowerCase();
+ return songs.filter(s=>(tab=='all'||s.type==tab)&&(year=='all'||s.dates.some(d=>d.startsWith(year)))
+  &&(!q||[title(s),chan(s),...s.verses,...s.notes,...s.dates].join(' ').toLowerCase().includes(q)));
+}
+function render(){
+ const counts={all:songs.length};for(const s of songs)counts[s.type]=(counts[s.type]||0)+1;
+ $('tabs').innerHTML=Object.entries(TYPES).map(([k,v])=>`<button class="chip" type="button" data-t="${k}" aria-pressed="${k==tab}">${v}<small>${counts[k]||0}</small></button>`).join('');
+ list=filtered();
+ $('count').textContent=list.length?`${list.length}곡 · 최근 나눠주신 순`:'';
+ $('grid').innerHTML=list.length?list.slice(0,shown).map((s,i)=>`<article class="card">
+   <button class="thumb" type="button" data-i="${i}" aria-label="재생"><img loading="lazy" src="${thumb(s.id)}" alt=""><span class="play"></span></button>
+   <p class="ttl" data-title="${esc(s.id)}">${s.type!='share'?`<span class="tag">${esc(TYPES[s.type])}</span>`:''}${esc(title(s)||'제목 불러오는 중')}</p>
+   <div class="meta">${esc(fmt(s.last))}${s.dates.length>1?` · <span class="cnt">${s.dates.length}번 나눠주심</span>`:''}${chan(s)?' · '+esc(chan(s)):''}</div>
+   ${s.type!='share'&&s.notes.length?`<div class="meta">${esc(s.notes.at(-1))}</div>`:''}
+   ${s.verses.length?`<div><span class="verse">${esc(s.verses.at(-1))}</span></div>`:''}
+  </article>`).join(''):`<p class="empty">${tab=='creation'||tab=='video'?'아직 이 분류로 표시된 곡이 없습니다.':'찾는 곡이 없습니다. 다른 낱말로 검색해 보세요.'}</p>`;
+ $('more').hidden=list.length<=shown;
+ lazyTitles();
+}
+// 제목이 비어 있으면 화면에 보일 때 불러와 이 브라우저에 저장
+const io=new IntersectionObserver(es=>{for(const e of es){if(!e.isIntersecting)continue;io.unobserve(e.target);loadTitle(e.target.dataset.title)}});
+function lazyTitles(){for(const el of document.querySelectorAll('[data-title]')){const s=songs.find(x=>x.id==el.dataset.title);if(s&&!title(s))io.observe(el)}}
+const pending={};
+function loadTitle(id){
+ if(pending[id])return;pending[id]=1;
+ fetch('https://noembed.com/embed?url='+encodeURIComponent('https://www.youtube.com/watch?v='+id)).then(r=>r.json()).then(d=>{
+  if(!d.title)return;tcache[id]=[d.title,d.author_name||''];store.set('cjs-titles',tcache);
+  for(const el of document.querySelectorAll(`[data-title="${id}"]`)){const tag=el.querySelector('.tag');el.textContent=d.title;if(tag)el.prepend(tag)}
+ }).catch(()=>{});
+}
+
+$('tabs').addEventListener('click',e=>{const b=e.target.closest('[data-t]');if(!b)return;tab=b.dataset.t;shown=PAGE;render()});
+$('years').addEventListener('click',e=>{const b=e.target.closest('[data-y]');if(!b)return;year=b.dataset.y;shown=PAGE;
+ for(const c of $('years').children)c.setAttribute('aria-pressed',c.dataset.y==year);render()});
+let tmr;$('q').addEventListener('input',()=>{clearTimeout(tmr);tmr=setTimeout(()=>{shown=PAGE;render()},200)});
+$('more').addEventListener('click',()=>{shown+=PAGE;render()});
+$('grid').addEventListener('click',e=>{const b=e.target.closest('[data-i]');if(b)play(+b.dataset.i)});
+$('today').addEventListener('click',e=>{if(e.target.closest('.thumb')){list=songs.slice();play(0)}});
+$('rand').addEventListener('click',()=>{if(!list.length)list=songs.slice();play(Math.floor(Math.random()*list.length))});
+$('next').addEventListener('click',()=>play((cur+1)%list.length));
+$('prev').addEventListener('click',()=>play((cur-1+list.length)%list.length));
+$('close').addEventListener('click',()=>$('dlg').close());
+$('dlg').addEventListener('close',()=>{try{player&&player.stopVideo()}catch(e){}});
+
+function play(i){
+ const s=list[i];if(!s)return;cur=i;
+ $('dTitle').textContent=title(s)||'찬양';
+ $('dMeta').textContent=[s.dates.map(fmt).join(', ')+' 나눠주심',s.verses.length?'읽을 말씀 '+s.verses.at(-1):'',chan(s)].filter(Boolean).join(' · ');
+ $('open').href='https://www.youtube.com/watch?v='+s.id;
+ if(!$('dlg').open)$('dlg').showModal();
+ if(LOCAL){ // PC에서 파일로 직접 열면 유튜브가 페이지 안 재생을 막음(오류 153)
+  const u='https://www.youtube.com/watch?v='+s.id;
+  $('pbox').innerHTML=`<a class="local" href="${u}" target="_blank" rel="noopener"><img src="${thumb(s.id)}" alt=""><div><b>유튜브에서 듣기</b><span>PC에서 파일로 바로 열면 이 화면 안에서는 재생되지 않습니다. 깃허브에 올린 주소에서는 여기서 바로 재생됩니다.</span></div></a>`;
+  return;
+ }
+ if(player&&player.loadVideoById)player.loadVideoById(s.id);
+ else if(window.YT&&YT.Player)makePlayer(s.id);
+ else{window.onYouTubeIframeAPIReady=()=>makePlayer(list[cur].id);
+  if(!document.querySelector('script[src*="iframe_api"]')){const sc=document.createElement('script');sc.src='https://www.youtube.com/iframe_api';document.head.append(sc)}}
+}
+function makePlayer(id){
+ player=new YT.Player('yt',{videoId:id,playerVars:{autoplay:1,rel:0,playsinline:1,origin:location.origin},
+  events:{onStateChange:e=>{if(e.data===0&&$('auto').checked)play((cur+1)%list.length)},
+   onError:()=>{if($('auto').checked)setTimeout(()=>play((cur+1)%list.length),1500)}}});
+}
+}
+</script>
+</body>
+</html>

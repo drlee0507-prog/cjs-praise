@@ -2,7 +2,8 @@
 
 사용법:  python tools/parse_kakao.py 카톡대화.txt songs.js
 - 같은 날 올리신 "읽을 말씀 : ..." 도 함께 저장합니다.
-- 이미 songs.js 이 있으면 저장된 곡 제목/채널명은 그대로 유지합니다.
+- 이미 songs.js 가 있으면 저장된 곡 제목/채널명은 그대로 유지합니다.
+- 기존 목록에 새 곡만 더합니다. 내보낸 파일에 예전 대화가 없어도 예전 곡은 지워지지 않습니다.
 """
 import json, os, re, sys
 
@@ -68,6 +69,10 @@ for mg in msgs:
         songs.append({'id': vid, 'date': mg['date'], 'time': mg['time'], 'note': n,
                       'verse': verse.get(mg['date'], ''), 'title': t, 'channel': c})
 
+# 기존 목록과 합치기: 이번 파일에 없는 예전 곡(대화가 일부만 내보내졌거나 직접 추가한 곡)도 그대로 유지
+new_keys = {(x['id'], x['date']) for x in songs}
+kept = [x for x in (load(out) if os.path.exists(out) else []) if (x['id'], x['date']) not in new_keys]
+songs = sorted(kept + songs, key=lambda x: (x['date'], x.get('time', '')))
 with open(out, 'w', encoding='utf-8') as f:
     f.write('window.SONGS = [\n' + ',\n'.join(json.dumps(x, ensure_ascii=False) for x in songs) + '\n];\n')
 print(f'{len(songs)}개 게시, 고유 곡 {len({s["id"] for s in songs})}곡 저장 -> {out}')

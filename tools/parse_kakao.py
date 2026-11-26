@@ -38,7 +38,10 @@ for mg in msgs:
     if SENDER in mg['name']:
         v = re.match(r'^읽을 ?말씀 ?[:：] ?(.+)', mg['text'].strip())
         if v:
-            verse.setdefault(mg['date'], v[1].split('\n')[0].strip())
+            vv = v[1].split('\n')[0].strip()
+            vv = re.sub(r'(\d+):(\d+)월 (\d+)', r'\1:\2-\3', vv)  # 카톡이 1-10 을 날짜(1월 10)로 바꾼 것 복구
+            mm = re.match(r'^(.*?\d+:\d+(?:-\d+)?)', vv)
+            verse.setdefault(mg['date'], (mm.group(1) if mm else vv).strip())
 
 old, oldnote = {}, {}
 if os.path.exists(out):

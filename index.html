@@ -58,6 +58,8 @@ h1{font-size:clamp(34px,5vw,50px);line-height:1.08;margin:0 0 12px;text-wrap:bal
 .meta{font-size:14px;color:var(--mute)}
 .today .meta{color:#d9c6dd}
 .verse{display:inline-block;font-size:14px;padding:2px 10px;border-radius:99px;background:var(--dawn2);color:var(--ink)}
+.vlink{text-decoration:none;transition:background .2s}.vlink:hover{background:var(--sun);color:#fff}.vlink span{font-size:12px;opacity:.7}
+#vread[hidden]{display:none!important}
 .today .verse{background:#ffffff1c;color:#fff}
 .bar{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
 .bar .wrap{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px max(5vw,16px)}
@@ -137,6 +139,7 @@ label.auto input{width:20px;height:20px}
   <div class="ctl">
    <button class="chip" id="prev" type="button">이전 곡</button>
    <button class="chip" id="next" type="button">다음 곡</button>
+   <a class="chip" id="vread" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none" hidden>말씀 읽기</a>
    <a class="chip" id="open" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none">유튜브에서 보기</a>
    <button class="chip" id="close" type="button">닫기</button>
    <label class="auto"><input type="checkbox" id="auto" checked> 끝나면 다음 곡</label>
@@ -144,8 +147,8 @@ label.auto input{width:20px;height:20px}
  </div>
 </dialog>
 
-<script src="songs.js?v=202611260930"></script>
-<script src="types.js?v=202611260930"></script>
+<script src="songs.js?v=202611262051"></script>
+<script src="types.js?v=202611262051"></script>
 <script>
 {
 const $=id=>document.getElementById(id);
@@ -156,6 +159,18 @@ const LOCAL=location.protocol==='file:';
 let songs=[],list=[],shown=PAGE,cur=-1,player=null,tab='all',year='all';
 const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const tcache=store.get('cjs-titles')||{};
+// 말씀 구절 -> 대한성서공회 개역개정 본문 링크
+const BOOKS=Object.fromEntries('창세기 gen,출애굽기 exo,레위기 lev,민수기 num,신명기 deu,여호수아 jos,사사기 jdg,룻기 rut,사무엘상 1sa,사무엘하 2sa,열왕기상 1ki,열왕기하 2ki,역대상 1ch,역대하 2ch,에스라 ezr,느헤미야 neh,에스더 est,욥기 job,시편 psa,잠언 pro,전도서 ecc,아가 sng,이사야 isa,예레미야 jer,예레미야애가 lam,에스겔 ezk,다니엘 dan,호세아 hos,요엘 jol,아모스 amo,오바댜 oba,요나 jnh,미가 mic,나훔 nam,하박국 hab,스바냐 zep,학개 hag,스가랴 zec,말라기 mal,마태복음 mat,마가복음 mrk,누가복음 luk,요한복음 jhn,사도행전 act,로마서 rom,고린도전서 1co,고린도후서 2co,갈라디아서 gal,에베소서 eph,빌립보서 php,골로새서 col,데살로니가전서 1th,데살로니가후서 2th,디모데전서 1ti,디모데후서 2ti,디도서 tit,빌레몬서 phm,히브리서 heb,야고보서 jas,베드로전서 1pe,베드로후서 2pe,요한일서 1jn,요한이서 2jn,요한삼서 3jn,유다서 jud,요한계시록 rev,요한1서 1jn,요한2서 2jn,요한3서 3jn,욥 job,룻 rut,계시록 rev'.split(',').map(x=>x.split(' ')));
+const vnorm=v=>String(v||'').replace(/(\d+):(\d+)월 (\d+)/,'$1:$2-$3').replace(/^(.*?\d+:\d+(?:-\d+)?).*$/,'$1').trim();
+function vlink(v){
+ const m=vnorm(v).match(/^([가-힣0-9]+?)\s*(\d+)\s*[:장편]\s*(\d+)?/);
+ const b=m&&BOOKS[m[1]];
+ return b?`https://www.bskorea.or.kr/bible/korbibReadpage.php?version=GAE&book=${b}&chap=${m[2]}&sec=${m[3]||1}`:'';
+}
+function vchip(v,pre){
+ const u=vlink(v),txt=(pre||'')+vnorm(v);
+ return u?`<a class="verse vlink" href="${esc(u)}" target="_blank" rel="noopener" title="말씀 읽기 (대한성서공회 개역개정)">${esc(txt)}<span aria-hidden="true"> ↗</span></a>`:`<span class="verse">${esc(txt)}</span>`;
+}
 const fmt=d=>d.replace(/^(\d{4})-(\d\d)-(\d\d)$/,(m,y,mo,da)=>`${y}.${+mo}.${+da}`);
 const thumb=id=>`https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
 const title=s=>s.title||tcache[s.id]?.[0]||'';
@@ -182,7 +197,7 @@ Promise.resolve().then(()=>{
  $('today').innerHTML=`<div class="lbl">가장 최근에 나눠주신 찬양 · ${esc(fmt(t.last))}</div>
   <button class="thumb" type="button" data-id="${esc(t.id)}" aria-label="재생"><img src="${thumb(t.id)}" alt=""><span class="play"></span></button>
   <div class="ttl" data-title="${esc(t.id)}">${esc(title(t)||'오늘의 찬양')}</div>
-  ${t.verses.length?`<div><span class="verse">읽을 말씀 · ${esc(t.verses.at(-1))}</span></div>`:''}`;
+  ${t.verses.length?`<div>${vchip(t.verses.at(-1),'읽을 말씀 · ')}</div>`:''}`;
  const yrs=[...new Set(songs.map(s=>s.last.slice(0,4)))].sort().reverse();
  $('years').innerHTML=['all',...yrs].map(y=>`<button class="chip" type="button" data-y="${y}" aria-pressed="${y==year}">${y=='all'?'모든 해':y+'년'}</button>`).join('');
  render();
@@ -203,7 +218,7 @@ function render(){
    <p class="ttl" data-title="${esc(s.id)}">${s.type!='share'?`<span class="tag">${esc(TYPES[s.type])}</span>`:''}${esc(title(s)||'제목 불러오는 중')}</p>
    <div class="meta">${esc(fmt(s.last))}${s.dates.length>1?` · <span class="cnt">${s.dates.length}번 나눠주심</span>`:''}${chan(s)?' · '+esc(chan(s)):''}</div>
    ${s.type!='share'&&s.notes.length?`<div class="meta">${esc(s.notes.at(-1))}</div>`:''}
-   ${s.verses.length?`<div><span class="verse">${esc(s.verses.at(-1))}</span></div>`:''}
+   ${s.verses.length?`<div>${vchip(s.verses.at(-1))}</div>`:''}
   </article>`).join(''):`<p class="empty">${tab=='creation'||tab=='video'?'아직 이 분류로 표시된 곡이 없습니다.':'찾는 곡이 없습니다. 다른 낱말로 검색해 보세요.'}</p>`;
  $('more').hidden=list.length<=shown;
  lazyTitles();
@@ -236,8 +251,9 @@ $('dlg').addEventListener('close',()=>{try{player&&player.stopVideo()}catch(e){}
 function play(i){
  const s=list[i];if(!s)return;cur=i;
  $('dTitle').textContent=title(s)||'찬양';
- $('dMeta').textContent=[s.dates.map(fmt).join(', ')+' 나눠주심',s.verses.length?'읽을 말씀 '+s.verses.at(-1):'',chan(s)].filter(Boolean).join(' · ');
+ $('dMeta').textContent=[s.dates.map(fmt).join(', ')+' 나눠주심',s.verses.length?'말씀 '+vnorm(s.verses.at(-1)):'',chan(s)].filter(Boolean).join(' · ');
  $('open').href='https://www.youtube.com/watch?v='+s.id;
+ {const u=s.verses.length?vlink(s.verses.at(-1)):'';$('vread').hidden=!u;if(u)$('vread').href=u;}
  if(!$('dlg').open)$('dlg').showModal();
  if(LOCAL){ // PC에서 파일로 직접 열면 유튜브가 페이지 안 재생을 막음(오류 153)
   const u='https://www.youtube.com/watch?v='+s.id;

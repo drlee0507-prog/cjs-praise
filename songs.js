@@ -733,5 +733,5 @@ window.SONGS = [
 {"id": "H4h2AMmcpng", "date": "2026-11-24", "time": "05:05", "note": "", "verse": "요한복음 10:7-18", "title": "온전케 되리 (피아버전) / COMPLETE (FIA.Ver) - 피아워십", "channel": "F.I.A"},
 {"id": "skZlPg7TB6I", "date": "2026-11-25", "time": "06:40", "note": "", "verse": "신명기 23:15-25", "title": "주님 큰 영광 받으소서 / LORD, LET YOUR GLORY FALL - 피아워십", "channel": "F.I.A"},
 {"id": "IzzZWVrsbk8", "date": "2026-11-26", "time": "06:04", "note": "", "verse": "로마서 6:1-14", "title": "오소서 진리의 성령님 + 나는 주를 섬기는 것에 후회가 없습니다 + 주님 말씀하시면 - 피아워십", "channel": "F.I.A"},
-{"id": "bRb2LcfxXug", "date": "2026-11-27", "time": "06:00", "note": "시 33:13 여호와께서 하늘에서 감찰하사 모든 인생을 보심이여", "verse": "시편 33:1-22", "title": "", "channel": ""}
+{"id": "bRb2LcfxXug", "date": "2026-11-27", "time": "06:00", "note": "시 33:13 여호와께서 하늘에서 감찰하사 모든 인생을 보심이여", "verse": "시편 33:1-22", "title": "항해자 | 로마연합교회 주일예배 찬양", "channel": "Rome Korean Church로마연합교회"}
 ];

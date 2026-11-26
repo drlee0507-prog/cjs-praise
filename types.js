@@ -4,5 +4,5 @@
 //   (창작 찬양/영상에는 그날 올라온 "읽을 말씀"이 자동으로 붙지 않습니다.)
 // - 여기 적은 영상은 다른 분이 단톡방에 올렸어도 사이트에 포함됩니다.
 window.TYPES = {
-  "qv9kJhf5lYU": { "type": "creation", "verse": "" }
+  "qv9kJhf5lYU": { "type": "creation", "verse": "예레미야 33:3" }
 };

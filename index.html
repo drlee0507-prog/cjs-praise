@@ -158,13 +158,16 @@ const chan=s=>s.channel||tcache[s.id]?.[1]||'';
 Promise.resolve().then(()=>{
  if(!Array.isArray(window.SONGS)||!window.SONGS.length)throw new Error('no data');
  const raw=window.SONGS,types=window.TYPES||{};
+ const tyOf=t=>!t?'share':typeof t=='string'?t:(t.type||'share');
+ const verseOf=t=>t&&typeof t=='object'&&t.verse?String(t.verse):'';
  const by={};
  for(const r of raw){
-  const s=by[r.id]||(by[r.id]={id:r.id,title:r.title,channel:r.channel,dates:[],verses:[],notes:[],type:types[r.id]||'share'});
-  s.dates.push(r.date); if(r.verse)s.verses.push(r.verse); if(r.note)s.notes.push(r.note);
+  const s=by[r.id]||(by[r.id]={id:r.id,title:r.title,channel:r.channel,dates:[],verses:[],notes:[],type:tyOf(types[r.id]),manual:verseOf(types[r.id])});
+  s.dates.push(r.date); if(r.verse&&s.type=='share')s.verses.push(r.verse); if(r.note)s.notes.push(r.note);
   if(r.title&&!s.title){s.title=r.title;s.channel=r.channel}
  }
  const DEAD='(재생할 수 없는 영상)';
+ for(const s of Object.values(by))if(s.manual)s.verses=[s.manual];
  songs=Object.values(by).filter(s=>s.title!==DEAD).map(s=>({...s,last:s.dates[s.dates.length-1],first:s.dates[0]})).sort((a,b)=>b.last.localeCompare(a.last));
  const days=raw.map(r=>r.date).sort();
  $('stats').innerHTML=[[songs.length+'곡','모은 찬양'],[raw.length+'번','나눠주신 횟수'],[days[0].slice(0,4)+'년 '+(+days[0].slice(5,7))+'월','부터']]

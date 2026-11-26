@@ -1,0 +1,16 @@
+{
+  "name": "매일 아침 한 곡",
+  "short_name": "아침 한 곡",
+  "description": "지구촌교회(서울 목동) 일본선교회 최종순 집사님이 매일 아침 나눠주신 찬양 모음",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#3d2347",
+  "theme_color": "#3d2347",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

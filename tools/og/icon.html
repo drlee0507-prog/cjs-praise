@@ -1,0 +1,23 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+*{margin:0}body{width:512px;height:512px;overflow:hidden}
+</style></head><body>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f1230"/><stop offset=".5" stop-color="#3d2347"/><stop offset=".85" stop-color="#8a3a52"/><stop offset="1" stop-color="#c8584a"/></linearGradient>
+<radialGradient id="glow" cx=".5" cy="1" r=".75"><stop offset="0" stop-color="#ffb27a" stop-opacity=".9"/><stop offset=".45" stop-color="#f0704f" stop-opacity=".35"/><stop offset="1" stop-color="#f0704f" stop-opacity="0"/></radialGradient>
+<radialGradient id="sun" cx=".5" cy=".35" r=".7"><stop offset="0" stop-color="#fff3dc"/><stop offset=".5" stop-color="#ffcf8f"/><stop offset="1" stop-color="#f59a5c"/></radialGradient>
+</defs>
+<rect width="512" height="512" fill="url(#sky)"/>
+<rect width="512" height="512" fill="url(#glow)"/>
+<g fill="#fff" opacity=".7"><circle cx="110" cy="120" r="3"/><circle cx="400" cy="96" r="2.5"/><circle cx="350" cy="170" r="2"/><circle cx="160" cy="200" r="2"/><circle cx="430" cy="230" r="2.5"/></g>
+<g fill="none" stroke="#ffd9c8" stroke-opacity=".28" stroke-width="5">
+<path d="M-10 330 C 150 290, 362 290, 522 330"/><path d="M-10 352 C 150 312, 362 312, 522 352"/><path d="M-10 374 C 150 334, 362 334, 522 374"/></g>
+<circle cx="256" cy="470" r="150" fill="url(#sun)"/>
+<g fill="#ffffff" transform="translate(200 150)">
+ <rect x="38" y="0" width="16" height="140" rx="3"/>
+ <rect x="130" y="-22" width="16" height="140" rx="3"/>
+ <polygon points="38,0 146,-22 146,14 38,36"/>
+ <ellipse cx="22" cy="140" rx="34" ry="25" transform="rotate(-18 22 140)"/>
+ <ellipse cx="114" cy="118" rx="34" ry="25" transform="rotate(-18 114 118)"/>
+</g>
+</svg></body></html>
